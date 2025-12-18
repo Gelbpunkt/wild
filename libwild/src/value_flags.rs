@@ -92,6 +92,12 @@ bitflags! {
         /// symbol requires a copy relocation, not necessarily that a copy relocation will be
         /// emitted with the exact name of this symbol.
         const COPY_RELOCATION = 1 << 13;
+
+        /// A TOC entry is needed.
+        const TOC = 1 << 14;
+
+        // ??
+        const DTV = 1 << 15;
     }
 }
 

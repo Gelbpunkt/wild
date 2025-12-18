@@ -36,10 +36,12 @@ pub(crate) mod part_id;
 pub(crate) mod perf;
 #[cfg(any(
     not(target_os = "linux"),
-    all(target_os = "linux", target_arch = "riscv64")
+    all(target_os = "linux", target_arch = "riscv64"),
+    all(target_os = "linux", target_arch = "powerpc64"),
 ))]
 #[path = "perf_unsupported.rs"]
 pub(crate) mod perf;
+pub(crate) mod ppc64;
 pub(crate) mod program_segments;
 pub(crate) mod resolution;
 pub(crate) mod riscv64;
@@ -177,6 +179,7 @@ impl Linker {
             arch::Architecture::X86_64 => self.link_for_arch::<x86_64::X86_64>(args),
             arch::Architecture::AArch64 => self.link_for_arch::<aarch64::AArch64>(args),
             arch::Architecture::RISCV64 => self.link_for_arch::<riscv64::RiscV64>(args),
+            arch::Architecture::PPC64 => self.link_for_arch::<ppc64::PPC64>(args),
         }
     }
 

@@ -439,6 +439,136 @@ pub fn riscv64_rel_type_to_string(r_type: u32) -> Cow<'static, str> {
     }
 }
 
+#[must_use]
+pub fn ppc64_rel_type_to_string(r_type: u32) -> Cow<'static, str> {
+    if let Some(name) = const_name_by_value![
+        r_type,
+        R_PPC64_NONE,
+        R_PPC64_ADDR32,
+        R_PPC64_ADDR24,
+        R_PPC64_ADDR16,
+        R_PPC64_ADDR16_LO,
+        R_PPC64_ADDR16_HI,
+        R_PPC64_ADDR16_HA,
+        R_PPC64_ADDR14,
+        R_PPC64_ADDR14_BRTAKEN,
+        R_PPC64_ADDR14_BRNTAKEN,
+        R_PPC64_REL24,
+        R_PPC64_REL14,
+        R_PPC64_REL14_BRTAKEN,
+        R_PPC64_REL14_BRNTAKEN,
+        R_PPC64_GOT16,
+        R_PPC64_GOT16_LO,
+        R_PPC64_GOT16_HI,
+        R_PPC64_GOT16_HA,
+        R_PPC64_COPY,
+        R_PPC64_GLOB_DAT,
+        R_PPC64_JMP_SLOT,
+        R_PPC64_RELATIVE,
+        R_PPC64_UADDR32,
+        R_PPC64_UADDR16,
+        R_PPC64_REL32,
+        R_PPC64_PLT32,
+        R_PPC64_PLTREL32,
+        R_PPC64_PLT16_LO,
+        R_PPC64_PLT16_HI,
+        R_PPC64_PLT16_HA,
+        R_PPC64_SECTOFF,
+        R_PPC64_SECTOFF_LO,
+        R_PPC64_SECTOFF_HI,
+        R_PPC64_SECTOFF_HA,
+        R_PPC64_ADDR30,
+        R_PPC64_ADDR64,
+        R_PPC64_ADDR16_HIGHER,
+        R_PPC64_ADDR16_HIGHERA,
+        R_PPC64_ADDR16_HIGHEST,
+        R_PPC64_ADDR16_HIGHESTA,
+        R_PPC64_UADDR64,
+        R_PPC64_REL64,
+        R_PPC64_PLT64,
+        R_PPC64_PLTREL64,
+        R_PPC64_TOC16,
+        R_PPC64_TOC16_LO,
+        R_PPC64_TOC16_HI,
+        R_PPC64_TOC16_HA,
+        R_PPC64_TOC,
+        R_PPC64_PLTGOT16,
+        R_PPC64_PLTGOT16_LO,
+        R_PPC64_PLTGOT16_HI,
+        R_PPC64_PLTGOT16_HA,
+        R_PPC64_ADDR16_DS,
+        R_PPC64_ADDR16_LO_DS,
+        R_PPC64_GOT16_DS,
+        R_PPC64_GOT16_LO_DS,
+        R_PPC64_PLT16_LO_DS,
+        R_PPC64_SECTOFF_DS,
+        R_PPC64_SECTOFF_LO_DS,
+        R_PPC64_TOC16_DS,
+        R_PPC64_TOC16_LO_DS,
+        R_PPC64_PLTGOT16_DS,
+        R_PPC64_PLTGOT16_LO_DS,
+        R_PPC64_TLS,
+        R_PPC64_DTPMOD64,
+        R_PPC64_TPREL16,
+        R_PPC64_TPREL16_LO,
+        R_PPC64_TPREL16_HI,
+        R_PPC64_TPREL16_HA,
+        R_PPC64_TPREL64,
+        R_PPC64_DTPREL16,
+        R_PPC64_DTPREL16_LO,
+        R_PPC64_DTPREL16_HI,
+        R_PPC64_DTPREL16_HA,
+        R_PPC64_DTPREL64,
+        R_PPC64_GOT_TLSGD16,
+        R_PPC64_GOT_TLSGD16_LO,
+        R_PPC64_GOT_TLSGD16_HI,
+        R_PPC64_GOT_TLSGD16_HA,
+        R_PPC64_GOT_TLSLD16,
+        R_PPC64_GOT_TLSLD16_LO,
+        R_PPC64_GOT_TLSLD16_HI,
+        R_PPC64_GOT_TLSLD16_HA,
+        R_PPC64_GOT_TPREL16_DS,
+        R_PPC64_GOT_TPREL16_LO_DS,
+        R_PPC64_GOT_TPREL16_HI,
+        R_PPC64_GOT_TPREL16_HA,
+        R_PPC64_GOT_DTPREL16_DS,
+        R_PPC64_GOT_DTPREL16_LO_DS,
+        R_PPC64_GOT_DTPREL16_HI,
+        R_PPC64_GOT_DTPREL16_HA,
+        R_PPC64_TPREL16_DS,
+        R_PPC64_TPREL16_LO_DS,
+        R_PPC64_TPREL16_HIGHER,
+        R_PPC64_TPREL16_HIGHERA,
+        R_PPC64_TPREL16_HIGHEST,
+        R_PPC64_TPREL16_HIGHESTA,
+        R_PPC64_DTPREL16_DS,
+        R_PPC64_DTPREL16_LO_DS,
+        R_PPC64_DTPREL16_HIGHER,
+        R_PPC64_DTPREL16_HIGHERA,
+        R_PPC64_DTPREL16_HIGHEST,
+        R_PPC64_DTPREL16_HIGHESTA,
+        R_PPC64_TLSGD,
+        R_PPC64_TLSLD,
+        R_PPC64_TOCSAVE,
+        R_PPC64_ADDR16_HIGH,
+        R_PPC64_ADDR16_HIGHA,
+        R_PPC64_TPREL16_HIGH,
+        R_PPC64_TPREL16_HIGHA,
+        R_PPC64_DTPREL16_HIGH,
+        R_PPC64_DTPREL16_HIGHA,
+        R_PPC64_JMP_IREL,
+        R_PPC64_IRELATIVE,
+        R_PPC64_REL16,
+        R_PPC64_REL16_LO,
+        R_PPC64_REL16_HI,
+        R_PPC64_REL16_HA,
+    ] {
+        Cow::Borrowed(name)
+    } else {
+        Cow::Owned(format!("Unknown ppc64 relocation type 0x{r_type:x}"))
+    }
+}
+
 /// Section flag bit values.
 pub mod shf {
     use super::SectionFlags;
@@ -901,6 +1031,39 @@ pub enum RelocationKind {
 
     /// The address must fulfill the alignment requirement.
     Alignment,
+
+    /// (S + A – P) >> 2
+    PPC64Rel24,
+
+    /// (S + A) >> 2
+    PPC64Addr24,
+
+    /// #ha(S + A – P)
+    PPC64Rel16Ha,
+
+    /// #lo(S + A – P)
+    PPC64Rel16Lo,
+
+    /// #ha(S + A – .TOC.)
+    PPC64Toc16Ha,
+
+    /// #lo(S + A – .TOC.)
+    PPC64Toc16Lo,
+
+    /// #lo(S + A – .TOC.) >> 2
+    PPC64Toc16LoDs,
+
+    /// #ha(@got@tlsld – .TOC.)
+    PPC64GotTlsLd16Ha,
+
+    /// #lo(@got@tlsld – .TOC.)
+    PPC64GotTlsLd16Lo,
+
+    /// #ha(@dtprel)
+    PPC64Dtprel16Ha,
+
+    /// #lo(@dtprel)
+    PPC64Dtprel16LoDs,
 }
 
 impl RelocationKind {
@@ -1043,6 +1206,21 @@ impl DynamicRelocationKind {
             DynamicRelocationKind::JumpSlot => object::elf::R_RISCV_JUMP_SLOT,
         }
     }
+
+    pub fn ppc64_r_type(&self) -> u32 {
+        match self {
+            DynamicRelocationKind::Copy => object::elf::R_PPC64_COPY,
+            DynamicRelocationKind::Irelative => object::elf::R_PPC64_IRELATIVE,
+            DynamicRelocationKind::DtpMod => object::elf::R_PPC64_DTPMOD64,
+            DynamicRelocationKind::DtpOff => object::elf::R_PPC64_DTPREL64,
+            DynamicRelocationKind::TpOff => object::elf::R_PPC64_TPREL64,
+            DynamicRelocationKind::Relative => object::elf::R_PPC64_RELATIVE,
+            DynamicRelocationKind::Absolute => object::elf::R_PPC64_ADDR64,
+            DynamicRelocationKind::GotEntry => object::elf::R_PPC64_GLOB_DAT,
+            DynamicRelocationKind::TlsDesc => panic!("fixme tlsdesc"),
+            DynamicRelocationKind::JumpSlot => object::elf::R_PPC64_JMP_SLOT,
+        }
+    }
 }
 
 #[derive(Clone, Debug, Copy, PartialEq, Eq)]
@@ -1100,9 +1278,16 @@ pub enum RiscVInstruction {
 }
 
 #[derive(Clone, Debug, Copy, PartialEq, Eq)]
+pub enum PPC64Instruction {
+    Low24Type,
+    Half16DsType,
+}
+
+#[derive(Clone, Debug, Copy, PartialEq, Eq)]
 pub enum RelocationInstruction {
     AArch64(AArch64Instruction),
     RiscV(RiscVInstruction),
+    PPC64(PPC64Instruction),
 }
 
 impl RelocationInstruction {
@@ -1127,6 +1312,7 @@ impl RelocationInstruction {
         match self {
             Self::AArch64(insn) => insn.write_to_value(extracted_value, negative, dest),
             Self::RiscV(insn) => insn.write_to_value(extracted_value, negative, dest),
+            Self::PPC64(insn) => insn.write_to_value(extracted_value, negative, dest),
         }
     }
 
@@ -1137,6 +1323,7 @@ impl RelocationInstruction {
         match self {
             Self::AArch64(insn) => insn.read_value(bytes),
             Self::RiscV(insn) => insn.read_value(bytes),
+            Self::PPC64(insn) => insn.read_value(bytes),
         }
     }
 
@@ -1146,6 +1333,7 @@ impl RelocationInstruction {
         match self {
             Self::AArch64(..) => 4,
             Self::RiscV(..) => 10,
+            Self::PPC64(..) => 8,
         }
     }
 }
@@ -1187,6 +1375,18 @@ impl RelocationSize {
     ) -> RelocationSize {
         Self::BitMasking(BitMask::new(
             RelocationInstruction::RiscV(instruction),
+            bit_start,
+            bit_end,
+        ))
+    }
+
+    pub(crate) const fn bit_mask_ppc64(
+        bit_start: u32,
+        bit_end: u32,
+        instruction: PPC64Instruction,
+    ) -> RelocationSize {
+        Self::BitMasking(BitMask::new(
+            RelocationInstruction::PPC64(instruction),
             bit_start,
             bit_end,
         ))

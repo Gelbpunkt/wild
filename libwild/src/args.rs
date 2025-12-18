@@ -513,6 +513,10 @@ const fn default_target_arch() -> Architecture {
     {
         Architecture::RISCV64
     }
+    #[cfg(target_arch = "powerpc64")]
+    {
+        Architecture::PPC64
+    }
 }
 
 pub(crate) fn read_args_from_file(path: &Path) -> Result<Vec<String>> {
@@ -569,6 +573,8 @@ impl Args {
             Architecture::X86_64 => Alignment { exponent: 12 },
             Architecture::AArch64 => Alignment { exponent: 16 },
             Architecture::RISCV64 => Alignment { exponent: 12 },
+            // ELFv2 ABI mandates 0x10000 or a larger power of 2
+            Architecture::PPC64 => Alignment { exponent: 16 },
         }
     }
 
@@ -1275,6 +1281,14 @@ fn setup_argument_parser() -> ArgumentParser {
             "RISC-V 64-bit ELF target",
             |args, _modifier_stack, _value| {
                 args.arch = Architecture::RISCV64;
+                Ok(())
+            },
+        )
+        .sub_option(
+            "elf64lppc",
+            "PowerPC 64-bit ELF target",
+            |args, _modifier_stack, _value| {
+                args.arch = Architecture::PPC64;
                 Ok(())
             },
         )

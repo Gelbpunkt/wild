@@ -2302,6 +2302,7 @@ impl<'data> RelaxationTester<'data> {
             | RelocationKind::PairSubtraction
             | RelocationKind::None
             | RelocationKind::Alignment => 0,
+            _ => unimplemented!(),
         };
 
         relative_to &= A::get_relocation_base_mask(&relocation_info);
@@ -2519,6 +2520,7 @@ fn value_kind_for_relocation<A: Arch>(
         | RelocationKind::Alignment => {
             return None;
         }
+        _ => unimplemented!(),
     };
 
     Some(kind)
@@ -3430,6 +3432,7 @@ impl<'data> GotIndex<'data> {
                 | RelocationKind::TlsDescGotBase => {
                     bail!("Missing dynamic relocation for {relocation_kind:?}")
                 }
+                _ => unimplemented!(),
             }
         }
     }

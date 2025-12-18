@@ -11,6 +11,7 @@ use linker_utils::elf::RelocationKindInfo;
 use linker_utils::elf::SectionFlags;
 use linker_utils::relaxation::RelocationModifier;
 use object::elf::EM_AARCH64;
+use object::elf::EM_PPC64;
 use object::elf::EM_RISCV;
 use object::elf::EM_X86_64;
 use std::borrow::Cow;
@@ -63,6 +64,7 @@ pub(crate) enum Architecture {
     X86_64,
     AArch64,
     RISCV64,
+    PPC64,
 }
 
 impl TryFrom<u16> for Architecture {
@@ -73,6 +75,7 @@ impl TryFrom<u16> for Architecture {
             EM_X86_64 => Ok(Self::X86_64),
             EM_AARCH64 => Ok(Self::AArch64),
             EM_RISCV => Ok(Self::RISCV64),
+            EM_PPC64 => Ok(Self::PPC64),
             _ => bail!("Unsupported architecture: 0x{:x}", arch),
         }
     }
@@ -82,8 +85,11 @@ impl Display for Architecture {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let arch = match self {
             Architecture::X86_64 => "x86_64",
+            // TODO: These three can also be big endian, but e_machine is not
+            // enough to identify the endianness accurately
             Architecture::AArch64 => "aarch64",
             Architecture::RISCV64 => "riscv64",
+            Architecture::PPC64 => "ppc64le",
         };
         write!(f, "{arch}")
     }

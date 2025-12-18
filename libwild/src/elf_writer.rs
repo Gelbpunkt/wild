@@ -2178,7 +2178,6 @@ fn apply_relocation<'data, A: Arch>(
             .plt_address()?
             .wrapping_add(addend as u64)
             .wrapping_sub(place.bitand(mask.place)),
-        // TLS-related relocations
         RelocationKind::TlsGd => resolution
             .tlsgd_got_address()?
             .bitand(mask.got_entry)
@@ -2258,6 +2257,16 @@ fn apply_relocation<'data, A: Arch>(
             .wrapping_sub(layout.got_base().bitand(mask.got)),
         RelocationKind::None | RelocationKind::TlsDescCall => 0,
         RelocationKind::Alignment => unreachable!(),
+        RelocationKind::PPC64Rel24 => todo!(),
+        RelocationKind::PPC64Addr24 => todo!(),
+        RelocationKind::PPC64Rel16Ha => todo!(),
+        RelocationKind::PPC64Rel16Lo => todo!(),
+        RelocationKind::PPC64Toc16Ha => todo!(),
+        RelocationKind::PPC64Toc16Lo => todo!(),
+        RelocationKind::PPC64Toc16LoDs => todo!(),
+        RelocationKind::PPC64GotTlsLd16Ha | RelocationKind::PPC64GotTlsLd16Lo => todo!(),
+        RelocationKind::PPC64Dtprel16Ha => todo!(),
+        RelocationKind::PPC64Dtprel16LoDs => todo!(),
     };
 
     let offset_in_section = offset_in_section as usize;

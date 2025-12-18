@@ -1954,6 +1954,14 @@ impl<'data> Layout<'data> {
         })
     }
 
+    /// Returns the memory address of the start of the TLS segment as used by PPC64 ELFv2.
+    pub(crate) fn tls_start_address_ppc64(&self) -> u64 {
+        self.segment_layouts.tls_layout.as_ref().map_or(0, |seg| {
+            // One doubleword (8 bytes) reserved at TP for ELFv2
+            seg.alignment.align_down(seg.mem_offset - 8)
+        })
+    }
+
     pub(crate) fn layout_data(&self) -> linker_layout::Layout {
         let files = self
             .group_layouts
@@ -3430,10 +3438,16 @@ fn resolution_flags(rel_kind: RelocationKind) -> ValueFlags {
         RelocationKind::TlsDesc
         | RelocationKind::TlsDescGot
         | RelocationKind::TlsDescGotBase
-        | RelocationKind::TlsDescCall => ValueFlags::GOT_TLS_DESCRIPTOR,
+        | RelocationKind::TlsDescCall
+        | RelocationKind::PPC64GotTlsLd16Ha
+        | RelocationKind::PPC64GotTlsLd16Lo => ValueFlags::GOT_TLS_DESCRIPTOR,
         RelocationKind::TlsLd | RelocationKind::TlsLdGot | RelocationKind::TlsLdGotBase => {
             ValueFlags::empty()
         }
+        RelocationKind::PPC64Toc16Ha
+        | RelocationKind::PPC64Toc16Lo
+        | RelocationKind::PPC64Toc16LoDs => ValueFlags::TOC,
+        RelocationKind::PPC64Dtprel16Ha | RelocationKind::PPC64Dtprel16LoDs => ValueFlags::DTV,
         RelocationKind::Absolute
         | RelocationKind::AbsoluteSet
         | RelocationKind::AbsoluteSetWord6
@@ -3445,7 +3459,11 @@ fn resolution_flags(rel_kind: RelocationKind) -> ValueFlags {
         | RelocationKind::DtpOff
         | RelocationKind::TpOff
         | RelocationKind::SymRelGotBase
-        | RelocationKind::PairSubtraction => ValueFlags::DIRECT,
+        | RelocationKind::PairSubtraction
+        | RelocationKind::PPC64Addr24
+        | RelocationKind::PPC64Rel24
+        | RelocationKind::PPC64Rel16Ha
+        | RelocationKind::PPC64Rel16Lo => ValueFlags::DIRECT,
         RelocationKind::None | RelocationKind::AbsoluteAArch64 | RelocationKind::Alignment => {
             ValueFlags::empty()
         }
