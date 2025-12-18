@@ -772,6 +772,8 @@ pub mod secnames {
     pub const GOT_PLT_SECTION_NAME: &[u8] = GOT_PLT_SECTION_NAME_STR.as_bytes();
     pub const PLT_SEC_SECTION_NAME_STR: &str = ".plt.sec";
     pub const PLT_SEC_SECTION_NAME: &[u8] = PLT_SEC_SECTION_NAME_STR.as_bytes();
+    pub const TOC_SECTION_NAME_STR: &str = ".toc";
+    pub const TOC_SECTION_NAME: &[u8] = TOC_SECTION_NAME_STR.as_bytes();
     pub const NOTE_ABI_TAG_SECTION_NAME_STR: &str = ".note.ABI-tag";
     pub const NOTE_ABI_TAG_SECTION_NAME: &[u8] = NOTE_ABI_TAG_SECTION_NAME_STR.as_bytes();
     pub const NOTE_GNU_PROPERTY_SECTION_NAME_STR: &str = ".note.gnu.property";

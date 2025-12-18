@@ -77,6 +77,7 @@ pub(crate) const SECTION_HEADERS: OutputSectionId = part_id::SECTION_HEADERS.out
 pub(crate) const SHSTRTAB: OutputSectionId = part_id::SHSTRTAB.output_section_id();
 pub(crate) const STRTAB: OutputSectionId = part_id::STRTAB.output_section_id();
 pub(crate) const GOT: OutputSectionId = part_id::GOT.output_section_id();
+pub(crate) const TOC: OutputSectionId = part_id::TOC.output_section_id();
 pub(crate) const RELA_PLT: OutputSectionId = part_id::RELA_PLT.output_section_id();
 pub(crate) const EH_FRAME: OutputSectionId = part_id::EH_FRAME.output_section_id();
 pub(crate) const EH_FRAME_HDR: OutputSectionId = part_id::EH_FRAME_HDR.output_section_id();
@@ -186,7 +187,7 @@ impl<'scope, 'data> OutputOrderBuilder<'scope, 'data> {
         let section_info = self.output_sections.output_info(section_id);
         debug_assert!(
             matches!(section_info.kind, SectionKind::Primary(_)),
-            "Attempted to directly emit secondary section {section_id}"
+            "Attempted to directly emit secondary section {section_info:?}"
         );
         if let Some(location) = section_info.location {
             self.events.push(OrderEvent::SetLocation(location));
@@ -468,6 +469,17 @@ const SECTION_DEFINITIONS: [BuiltInSectionDetails; NUM_BUILT_IN_SECTIONS] = [
         section_flags: shf::ALLOC.with(shf::EXECINSTR),
         element_size: crate::elf::PLT_ENTRY_SIZE,
         min_alignment: alignment::PLT,
+        ..DEFAULT_DEFS
+    },
+    BuiltInSectionDetails {
+        kind: SectionKind::Primary(SectionName(TOC_SECTION_NAME)),
+        ty: sht::PROGBITS,
+        section_flags: shf::ALLOC.with(shf::WRITE),
+        start_symbol_name: Some("__toc_start"),
+        element_size: 8,
+        min_alignment: alignment::TOC_ENTRY,
+        target_segment_type: Some(pt::LOAD),
+        is_relro: true,
         ..DEFAULT_DEFS
     },
     BuiltInSectionDetails {
@@ -920,6 +932,7 @@ impl CustomSectionIds {
         builder.add_section(INIT_ARRAY);
         builder.add_section(FINI_ARRAY);
         builder.add_section(PREINIT_ARRAY);
+        builder.add_section(TOC);
         builder.add_section(DATA_REL_RO);
         builder.add_section(DYNAMIC);
         builder.add_section(GOT);
@@ -1279,6 +1292,7 @@ fn test_constant_ids() {
         (TBSS, TBSS_SECTION_NAME),
         (BSS, BSS_SECTION_NAME),
         (GOT, GOT_SECTION_NAME),
+        (TOC, TOC_SECTION_NAME),
         (INIT, INIT_SECTION_NAME),
         (FINI, FINI_SECTION_NAME),
         (RELA_PLT, RELA_PLT_SECTION_NAME),

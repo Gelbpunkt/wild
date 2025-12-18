@@ -2259,7 +2259,21 @@ fn apply_relocation<'data, A: Arch>(
         RelocationKind::Alignment => unreachable!(),
         RelocationKind::PPC64Rel24 => todo!(),
         RelocationKind::PPC64Addr24 => todo!(),
-        RelocationKind::PPC64Rel16Ha => todo!(),
+        RelocationKind::PPC64Rel16Ha => {
+            // #ha(symbol value whose index resides in reloc entry + addend - section offset)
+            resolution
+                .value_with_addend(
+                    addend,
+                    symbol_index,
+                    object_layout,
+                    &layout.merged_strings,
+                    &layout.merged_string_start_addresses,
+                )?
+                .bitand(mask.symbol_plus_addend)
+                .wrapping_sub(place.bitand(mask.place))
+                .wrapping_add(0x8000)
+                >> 16 // ?
+        }
         RelocationKind::PPC64Rel16Lo => todo!(),
         RelocationKind::PPC64Toc16Ha => todo!(),
         RelocationKind::PPC64Toc16Lo => todo!(),
@@ -2595,6 +2609,7 @@ fn write_plt_got_entries<A: Arch>(
                     dynamic_symbol_index: None,
                     got_address: Some(got_address),
                     plt_address: None,
+                    toc_address: None,
                     flags: ValueFlags::GOT | ValueFlags::ABSOLUTE,
                 },
             )?;
@@ -2614,6 +2629,7 @@ fn write_plt_got_entries<A: Arch>(
                 dynamic_symbol_index: None,
                 got_address: Some(got_address.saturating_add(elf::GOT_ENTRY_SIZE)),
                 plt_address: None,
+                toc_address: None,
                 flags: ValueFlags::GOT | ValueFlags::ABSOLUTE,
             },
         )?;
@@ -3882,6 +3898,8 @@ fn write_section_headers(out: &mut [u8], layout: &Layout) -> Result {
     let mut order = layout.output_order.into_iter().peekable();
 
     while let Some(event) = order.next() {
+        tracing::debug!("Order event: {event:?}");
+
         let OrderEvent::Section(section_id) = event else {
             continue;
         };

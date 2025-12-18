@@ -896,6 +896,7 @@ pub(crate) struct Resolution {
     /// offset within module).
     pub(crate) got_address: Option<NonZeroU64>,
     pub(crate) plt_address: Option<NonZeroU64>,
+    pub(crate) toc_address: Option<NonZeroU64>,
     pub(crate) flags: ValueFlags,
 }
 
@@ -929,6 +930,7 @@ impl SectionResolution {
             dynamic_symbol_index: None,
             got_address: None,
             plt_address: None,
+            toc_address: None,
             flags: ValueFlags::empty(),
         })
     }
@@ -5645,6 +5647,7 @@ fn create_resolution(
         dynamic_symbol_index,
         got_address: None,
         plt_address: None,
+        toc_address: None,
         flags,
     };
     if flags.needs_plt() {
